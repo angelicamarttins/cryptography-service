@@ -1,12 +1,15 @@
 package com.service.cryptography.controller;
 
 import com.service.cryptography.model.Transfer;
-import com.service.cryptography.model.dto.TransferPayload;
+import com.service.cryptography.model.dto.TransferDto;
 import com.service.cryptography.repository.TransferRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Slf4j
 @RestController
@@ -24,12 +27,14 @@ public class TransferController {
   }
 
   @PostMapping
-  public ResponseEntity<TransferPayload.Response> saveCryptography(@RequestBody TransferPayload.Request request) {
+  public ResponseEntity<Void> saveCryptography(@RequestBody TransferDto transferDto) throws URISyntaxException {
     log.info("Starting save transfer");
 
     Transfer savedTransfer = transferRepository.save();
 
-    return ResponseEntity.ok(new TransferPayload.Response(savedTransfer.getTransferId()));
+    URI uri = new URI("localhost:8080/" + savedTransfer.getTransferId());
+
+    return ResponseEntity.created(uri).build();
   }
 
   @PatchMapping("/{transferId}")

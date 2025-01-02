@@ -11,7 +11,7 @@ public class TransferDto {
   private String creditCardToken;
   private Long value;
 
-  public static TransferDto toDto(Transfer transfer) {
+  public static TransferDto fromEntityToDto(Transfer transfer) {
     return TransferDto
         .builder()
         .transferId(transfer.getTransferId())
@@ -21,9 +21,8 @@ public class TransferDto {
         .build();
   }
 
-  public static Transfer toEntity(TransferDto transferDto) {
+  public static Transfer fromDtoToEntity(TransferDto transferDto) {
     return new Transfer(
-        transferDto.transferId,
         transferDto.userDocument,
         transferDto.creditCardToken,
         transferDto.value
