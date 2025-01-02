@@ -30,7 +30,7 @@ public class TransferController {
   public ResponseEntity<Void> saveCryptography(@RequestBody TransferDto transferDto) throws URISyntaxException {
     log.info("Starting save transfer");
 
-    Transfer savedTransfer = transferRepository.save();
+    Transfer savedTransfer = transferRepository.save(TransferDto.fromDtoToEntity(transferDto));
 
     URI uri = new URI("localhost:8080/" + savedTransfer.getTransferId());
 
