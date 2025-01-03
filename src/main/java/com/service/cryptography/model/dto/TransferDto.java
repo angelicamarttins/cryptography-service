@@ -3,9 +3,11 @@ package com.service.cryptography.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.service.cryptography.model.Transfer;
 import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Data
 @Builder
 public class TransferDto {
 

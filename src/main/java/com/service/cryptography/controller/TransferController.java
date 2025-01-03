@@ -1,8 +1,11 @@
 package com.service.cryptography.controller;
 
+import com.service.cryptography.contract.TransferStrategy;
 import com.service.cryptography.model.Transfer;
 import com.service.cryptography.model.dto.TransferDto;
+import com.service.cryptography.model.dto.TransferPayload;
 import com.service.cryptography.repository.TransferRepository;
+import com.service.cryptography.service.TransferService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,7 @@ import java.net.URISyntaxException;
 public class TransferController {
 
   private final TransferRepository transferRepository;
+  private final TransferService transferService;
 
   @GetMapping("/{transferId}")
   public ResponseEntity<String> getCryptography(@PathVariable Long transferId) {
@@ -29,12 +33,14 @@ public class TransferController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> saveCryptography(@RequestBody TransferDto transferDto) throws URISyntaxException {
+  public ResponseEntity<Void> saveCryptography(@RequestBody TransferPayload transferPayload) throws URISyntaxException {
     log.info("Starting save transfer");
 
-    Transfer savedTransfer = transferRepository.save(TransferDto.fromDtoToEntity(transferDto));
+    TransferDto savedTransfer = transferService.processTransfer(transferPayload);
 
     URI uri = new URI("http://localhost:8080/transfer/" + savedTransfer.getTransferId());
+
+    log.info("Transfer completed successfully");
 
     return ResponseEntity.created(uri).build();
   }
