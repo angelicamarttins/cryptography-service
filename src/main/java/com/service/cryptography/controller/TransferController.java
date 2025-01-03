@@ -4,7 +4,9 @@ import com.service.cryptography.model.Transfer;
 import com.service.cryptography.model.dto.TransferDto;
 import com.service.cryptography.repository.TransferRepository;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,7 @@ import java.net.URISyntaxException;
 
 @Slf4j
 @RestController
+@Data
 @AllArgsConstructor
 @RequestMapping("/transfer")
 public class TransferController {
@@ -32,7 +35,7 @@ public class TransferController {
 
     Transfer savedTransfer = transferRepository.save(TransferDto.fromDtoToEntity(transferDto));
 
-    URI uri = new URI("localhost:8080/" + savedTransfer.getTransferId());
+    URI uri = new URI("http://localhost:8080/transfer/" + savedTransfer.getTransferId());
 
     return ResponseEntity.created(uri).build();
   }

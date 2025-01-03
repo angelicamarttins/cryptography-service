@@ -1,3 +1,4 @@
+base-uri: http://localhost:8080/transfer/
 spring:
   datasource:
     url: jdbc:h2:mem:testdb

@@ -33,6 +33,7 @@ public class TransferDto {
 
   public static Transfer fromDtoToEntity(TransferDto transferDto) {
     return new Transfer(
+        transferDto.transferId,
         transferDto.userDocument,
         transferDto.creditCardToken,
         transferDto.value
