@@ -1,5 +1,7 @@
 package com.service.cryptography.contract;
- import com.service.cryptography.model.enums.CryptographyMethod;
+
+import com.service.cryptography.model.enums.CryptographyMethod;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
