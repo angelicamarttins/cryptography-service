@@ -1,7 +1,5 @@
 package com.service.cryptography.controller;
 
-import com.service.cryptography.contract.TransferStrategy;
-import com.service.cryptography.model.Transfer;
 import com.service.cryptography.model.dto.TransferDto;
 import com.service.cryptography.model.dto.TransferPayload;
 import com.service.cryptography.repository.TransferRepository;
