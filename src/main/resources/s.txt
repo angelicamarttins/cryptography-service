@@ -1,0 +1,56 @@
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.SecureRandom;
+import java.util.Base64;
+
+public class KeyGenerationUtils {
+
+    // Gera um salt aleatório
+    public static byte[] generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16]; // Salt de 16 bytes
+        random.nextBytes(salt);
+        return salt;
+    }
+
+    // Gera uma SecretKey a partir da senha e do salt
+    public static SecretKey generateKeyFromPassword(String password, byte[] salt) throws Exception {
+        int iterations = 65536; // Número de iterações (recomendado >= 100,000 para produção)
+        int keyLength = 128;    // Tamanho da chave (128, 192 ou 256 bits)
+        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, keyLength);
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        byte[] keyBytes = factory.generateSecret(spec).getEncoded();
+        return new SecretKeySpec(keyBytes, "AES");
+    }
+
+    // Converte um array de bytes para Base64 (para armazenamento/transferência)
+    public static String encodeBase64(byte[] data) {
+        return Base64.getEncoder().encodeToString(data);
+    }
+
+    // Decodifica um string Base64 para array de bytes
+    public static byte[] decodeBase64(String base64) {
+        return Base64.getDecoder().decode(base64);
+    }
+
+    public static void main(String[] args) {
+        try {
+            // Senha fornecida pelo cliente
+            String password = "senha-segura";
+
+            // Gerar um salt aleatório
+            byte[] salt = generateSalt();
+            System.out.println("Salt (Base64): " + encodeBase64(salt));
+
+            // Gerar a chave secreta a partir da senha e do salt
+            SecretKey secretKey = generateKeyFromPassword(password, salt);
+            System.out.println("Chave gerada (Base64): " + encodeBase64(secretKey.getEncoded()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
