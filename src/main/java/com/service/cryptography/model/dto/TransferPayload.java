@@ -10,6 +10,8 @@ public class TransferPayload {
   @JsonProperty("cryptography_method")
   private CryptographyMethod cryptographyMethod;
 
+  private String password;
+
   @JsonProperty("transfer")
   private TransferDto transferDto;
 

@@ -1,6 +1,5 @@
 package com.service.cryptography.controller;
 
-import com.service.cryptography.model.dto.TransferDto;
 import com.service.cryptography.model.dto.TransferPayload;
 import com.service.cryptography.repository.TransferRepository;
 import com.service.cryptography.service.TransferService;
@@ -31,12 +30,13 @@ public class TransferController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> saveCryptography(@RequestBody TransferPayload transferPayload) throws URISyntaxException {
+  public ResponseEntity<Void> saveCryptography(@RequestBody TransferPayload transferPayload)
+      throws URISyntaxException {
     log.info("Starting save transfer");
 
-    TransferDto savedTransfer = transferService.processTransfer(transferPayload);
+    Long savedTransferId = transferService.processTransfer(transferPayload);
 
-    URI uri = new URI("http://localhost:8080/transfer/" + savedTransfer.getTransferId());
+    URI uri = new URI("http://localhost:8080/transfer/" + savedTransferId);
 
     log.info("Transfer completed successfully");
 

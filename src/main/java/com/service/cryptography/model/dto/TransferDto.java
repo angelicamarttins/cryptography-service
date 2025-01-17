@@ -42,4 +42,17 @@ public class TransferDto {
     );
   }
 
+  public static Transfer fromEncryptedDtoToEntity(
+      TransferDto transferDto,
+      String encryptedUserDocument,
+      String encryptedCreditCardToken
+  ) {
+    return new Transfer(
+        transferDto.transferId,
+        encryptedUserDocument,
+        encryptedCreditCardToken,
+        transferDto.value
+    );
+  }
+
 }
