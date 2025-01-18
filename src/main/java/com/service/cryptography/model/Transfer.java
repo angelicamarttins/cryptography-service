@@ -18,11 +18,11 @@ public class Transfer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "transfer_id", unique = true)
   private Long transferId;
-  @Column(name = "user_document", unique = true)
+  @Column(name = "user_document", nullable = false)
   private String userDocument;
-  @Column(name = "credit_card_token")
+  @Column(name = "credit_card_token", nullable = false)
   private String creditCardToken;
-  @Column(name = "transfer_value")
+  @Column(name = "transfer_value", nullable = false)
   private BigDecimal value;
 
   public Transfer(String userDocument, String creditCardToken, BigDecimal value) {
