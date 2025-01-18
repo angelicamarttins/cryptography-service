@@ -43,7 +43,8 @@
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
         <property name="max" value="120"/>
-        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        <property name="ignorePattern"
+                  value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
     <module name="TreeWalker">
@@ -252,7 +253,7 @@
             <property name="basicOffset" value="2"/>
             <property name="braceAdjustment" value="2"/>
             <property name="caseIndent" value="2"/>
-            <property name="throwsIndent" value="4"/>
+            <property name="throwsIndent" value="2"/>
             <property name="lineWrappingIndentation" value="2"/>
             <property name="arrayInitIndent" value="2"/>
         </module>

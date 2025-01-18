@@ -1,25 +1,28 @@
 package com.service.cryptography.security;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.crypto.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
 public class AesEncryption {
 
   public static String encrypt(String plainText, String userDocument, String password)
-      throws NoSuchAlgorithmException,
-      NoSuchPaddingException,
-      InvalidKeyException,
-      IllegalBlockSizeException,
-      BadPaddingException,
-      InvalidKeySpecException {
+    throws NoSuchAlgorithmException,
+           NoSuchPaddingException,
+           InvalidKeyException,
+           IllegalBlockSizeException,
+           BadPaddingException,
+           InvalidKeySpecException {
     log.info("Encrypting plain text");
 
     SecretKey secretKey = KeyGenerationUtils.generateSecretKeyFromPassword(userDocument, password);
@@ -31,12 +34,12 @@ public class AesEncryption {
   }
 
   public static String decrypt(String encryptedText, String userDocument, String password)
-      throws NoSuchAlgorithmException,
-      NoSuchPaddingException,
-      InvalidKeyException,
-      IllegalBlockSizeException,
-      BadPaddingException,
-      InvalidKeySpecException {
+    throws NoSuchAlgorithmException,
+           NoSuchPaddingException,
+           InvalidKeyException,
+           IllegalBlockSizeException,
+           BadPaddingException,
+           InvalidKeySpecException {
     SecretKey secretKey = KeyGenerationUtils.generateSecretKeyFromPassword(userDocument, password);
     Cipher cipher = Cipher.getInstance("AES");
     cipher.init(Cipher.DECRYPT_MODE, secretKey);
