@@ -34,6 +34,8 @@ public class TransferController {
       throws URISyntaxException {
     log.info("Starting save transfer");
 
+    // Fazer validação se já não há um usuário com esse documento
+
     Long savedTransferId = transferService.processTransfer(transferPayload);
 
     URI uri = new URI("http://localhost:8080/transfer/" + savedTransferId);
