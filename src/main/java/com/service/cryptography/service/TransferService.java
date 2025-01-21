@@ -1,12 +1,19 @@
 package com.service.cryptography.service;
 
 import com.service.cryptography.exception.CryptographyException;
+import com.service.cryptography.exception.TransferNotFoundException;
 import com.service.cryptography.exception.common.ErrorData;
 import com.service.cryptography.model.Transfer;
 import com.service.cryptography.model.dto.TransferDto;
 import com.service.cryptography.model.dto.TransferPayload;
 import com.service.cryptography.repository.TransferRepository;
 import com.service.cryptography.security.AesEncryption;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,17 +49,71 @@ public class TransferService {
         encryptedCreditCardToken
       ));
 
-
-      throw new IllegalArgumentException("recoreco");
-      //      return transfer.getTransferId();
-    } catch (Exception exception) {
+      return transfer.getTransferId();
+    } catch (NoSuchPaddingException
+             | IllegalBlockSizeException
+             | NoSuchAlgorithmException
+             | BadPaddingException
+             | InvalidKeySpecException
+             | InvalidKeyException cryptographyException
+    ) {
       log.error(
-        "Something went wrong. Error: {} Cause: {}",
-        exception.getMessage(),
-        exception.getCause()
+        "Something went wrong during encryption. Error: {} Cause: {}",
+        cryptographyException.getMessage(),
+        cryptographyException.getCause()
       );
 
-      throw new CryptographyException(new ErrorData("Erro teste", HttpStatus.BAD_REQUEST), exception.getCause());
+      throw new CryptographyException(
+        new ErrorData(cryptographyException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
+        cryptographyException.getCause()
+      );
+    }
+  }
+
+  public TransferDto findTransfer(Long transferId, String password) {
+
+    try {
+      Transfer transfer = transferRepository
+        .findById(transferId)
+        .orElseThrow(() -> new TransferNotFoundException(transferId));
+
+      String decryptedUserDocument = AesEncryption.decrypt(
+        transfer.getUserDocument(),
+        transfer.getUserDocument(),
+        password
+      );
+      String decryptedCreditCardToken = AesEncryption.decrypt(
+        transfer.getCreditCardToken(),
+        transfer.getUserDocument(),
+        password
+      );
+      ;
+
+      return TransferDto.fromEncryptedEntityToDto(transfer, decryptedUserDocument, decryptedCreditCardToken);
+    } catch (NoSuchPaddingException
+             | IllegalBlockSizeException
+             | NoSuchAlgorithmException
+             | BadPaddingException
+             | InvalidKeySpecException
+             | InvalidKeyException cryptographyException
+    ) {
+      log.error(
+        "Something went wrong during decryption. Error: {} Cause: {}",
+        cryptographyException.getMessage(),
+        cryptographyException.getCause()
+      );
+
+      throw new CryptographyException(
+        new ErrorData(cryptographyException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
+        cryptographyException.getCause()
+      );
+    } catch (TransferNotFoundException transferNotFoundException) {
+      log.error(
+        "Transfer not found. TransferId: {}",
+        transferNotFoundException.getMessage()
+      );
+
+      throw new TransferNotFoundException(transferId);
     }
   }
 

@@ -49,4 +49,18 @@ public class TransferDto {
     );
   }
 
+  public static TransferDto fromEncryptedEntityToDto(
+    Transfer transfer,
+    String decryptedUserDocument,
+    String decryptedCreditCardToken
+  ) {
+    return TransferDto
+      .builder()
+      .transferId(transfer.getTransferId())
+      .userDocument(decryptedUserDocument)
+      .creditCardToken(decryptedCreditCardToken)
+      .value(transfer.getValue())
+      .build();
+  }
+
 }
