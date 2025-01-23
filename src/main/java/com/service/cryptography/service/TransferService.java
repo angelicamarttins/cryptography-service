@@ -34,12 +34,10 @@ public class TransferService {
     try {
       String encryptedUserDocument = AesEncryption.encrypt(
         transferDto.getUserDocument(),
-        transferDto.getUserDocument(),
         transferPayload.getPassword()
       );
       String encryptedCreditCardToken = AesEncryption.encrypt(
         transferDto.getCreditCardToken(),
-        transferDto.getUserDocument(),
         transferPayload.getPassword()
       );
 
@@ -79,12 +77,10 @@ public class TransferService {
 
       String decryptedUserDocument = AesEncryption.decrypt(
         transfer.getUserDocument(),
-        transfer.getUserDocument(),
         password
       );
       String decryptedCreditCardToken = AesEncryption.decrypt(
         transfer.getCreditCardToken(),
-        transfer.getUserDocument(),
         password
       );
       ;

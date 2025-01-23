@@ -10,10 +10,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class KeyGenerationUtils {
 
-  public static SecretKey generateSecretKeyFromPassword(String userDocument, String password)
+  public static SecretKey generateSecretKeyFromPassword(String password)
     throws NoSuchAlgorithmException,
            InvalidKeySpecException {
-    byte[] salt = generateDeterministicSalt(userDocument, password);
+    byte[] salt = generateDeterministicSalt(password);
     PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
     SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
     byte[] keyBytes = factory.generateSecret(spec).getEncoded();
@@ -21,9 +21,8 @@ public class KeyGenerationUtils {
     return new SecretKeySpec(keyBytes, "AES");
   }
 
-  private static byte[] generateDeterministicSalt(String userDocument, String password) {
-    String data = userDocument + ":" + password;
-    return data.getBytes(StandardCharsets.UTF_8);
+  private static byte[] generateDeterministicSalt(String password) {
+    return password.getBytes(StandardCharsets.UTF_8);
   }
 
 }
