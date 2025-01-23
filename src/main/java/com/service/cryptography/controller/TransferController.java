@@ -32,12 +32,12 @@ public class TransferController {
   private final TransferService transferService;
 
   @GetMapping("/{transferId}")
-  public ResponseEntity<String> getCryptography(@PathVariable Long transferId, @RequestParam String password) {
+  public ResponseEntity<TransferDto> getCryptography(@PathVariable Long transferId, @RequestParam String password) {
     log.info("Starting get transfer");
 
     TransferDto transfer = transferService.findTransfer(transferId, password);
 
-    return ResponseEntity.ok("Found cryptography id = " + transferId);
+    return ResponseEntity.ok(transfer);
   }
 
   @PostMapping

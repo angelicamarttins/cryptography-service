@@ -83,7 +83,6 @@ public class TransferService {
         transfer.getCreditCardToken(),
         password
       );
-      ;
 
       return TransferDto.fromEncryptedEntityToDto(transfer, decryptedUserDocument, decryptedCreditCardToken);
     } catch (NoSuchPaddingException
