@@ -1,10 +1,12 @@
 package com.service.cryptography.model.dto;
 
 import com.service.cryptography.model.Transfer;
-import java.math.BigDecimal;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,14 +16,22 @@ public class TransferDto {
 
   private Long transferId;
 
-  @NotBlank
+  @NotBlank(groups = TransferDtoValidators.CreateTransfer.class,
+    message = "UserDocument is mandatory for creation and optional for updating")
   private String userDocument;
 
-  @NotBlank
+  @NotBlank(groups = TransferDtoValidators.CreateTransfer.class,
+    message = "CreditCardToken is mandatory for creation and optional for updating")
   private String creditCardToken;
 
-  @NotNull
-  @Size(max = 999_999_999)
+  @NotNull(groups = TransferDtoValidators.CreateTransfer.class,
+    message = "Value is mandatory for creation and optional for updating")
+  @DecimalMin(groups = {TransferDtoValidators.CreateTransfer.class, TransferDtoValidators.UpdateTransfer.class},
+    value = "0",
+    message = "Value must be positive")
+  @DecimalMax(groups = {TransferDtoValidators.CreateTransfer.class, TransferDtoValidators.UpdateTransfer.class},
+    value = "999999999",
+    message = "Value exceeds the maximum allowed")
   private BigDecimal value;
 
   public static TransferDto fromEntityToDto(Transfer transfer) {

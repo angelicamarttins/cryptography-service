@@ -1,6 +1,7 @@
 package com.service.cryptography.controller;
 
 import com.service.cryptography.model.dto.TransferDto;
+import com.service.cryptography.model.dto.TransferDtoValidators;
 import com.service.cryptography.model.dto.TransferPayload;
 import com.service.cryptography.repository.TransferRepository;
 import com.service.cryptography.service.TransferService;
@@ -9,8 +10,8 @@ import java.net.URISyntaxException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,12 +42,15 @@ public class TransferController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> saveCryptography(@RequestBody TransferPayload transferPayload)
+  public ResponseEntity<Void> saveCryptography(
+    @Validated(TransferDtoValidators.CreateTransfer.class)
+    @RequestBody TransferPayload transferPayload
+  )
     throws URISyntaxException {
     log.info("Starting save transfer");
     Long savedTransferId = transferService.processTransfer(transferPayload);
 
-    URI uri = new URI("http://localhost:8080/transfer/" + savedTransferId);
+    URI uri = new URI("localhost:8080/transfer/" + savedTransferId);
 
     log.info("Transfer completed successfully");
 
@@ -54,8 +58,10 @@ public class TransferController {
   }
 
   @PatchMapping("/{transferId}")
-  public ResponseEntity<String> updateCryptography(@PathVariable Long transferId) {
+  public ResponseEntity<String> updateCryptography(@PathVariable Long transferId, @RequestParam String password) {
     log.info("Starting update transfer");
+
+    transferService.updateTransfer(transferId, password);
 
     return ResponseEntity.ok("Updated cryptography id = " + transferId);
   }

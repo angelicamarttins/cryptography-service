@@ -69,7 +69,6 @@ public class TransferService {
   }
 
   public TransferDto findTransfer(Long transferId, String password) {
-
     try {
       Transfer transfer = transferRepository
         .findById(transferId)
@@ -102,13 +101,41 @@ public class TransferService {
         new ErrorData(cryptographyException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
         cryptographyException.getCause()
       );
-    } catch (TransferNotFoundException transferNotFoundException) {
-      log.error(
-        "Transfer not found. TransferId: {}",
-        transferNotFoundException.getMessage()
+    }
+  }
+
+  public void updateTransfer(Long transferId, String password) {
+    try {
+      Transfer transfer = transferRepository
+        .findById(transferId)
+        .orElseThrow(() -> new TransferNotFoundException(transferId));
+
+      String decryptedUserDocument = AesEncryption.decrypt(
+        transfer.getUserDocument(),
+        password
+      );
+      String decryptedCreditCardToken = AesEncryption.decrypt(
+        transfer.getCreditCardToken(),
+        password
       );
 
-      throw new TransferNotFoundException(transferId);
+    } catch (NoSuchPaddingException
+             | IllegalBlockSizeException
+             | NoSuchAlgorithmException
+             | BadPaddingException
+             | InvalidKeySpecException
+             | InvalidKeyException cryptographyException
+    ) {
+      log.error(
+        "Something went wrong during decryption. Error: {} Cause: {}",
+        cryptographyException.getMessage(),
+        cryptographyException.getCause()
+      );
+
+      throw new CryptographyException(
+        new ErrorData(cryptographyException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
+        cryptographyException.getCause()
+      );
     }
   }
 
