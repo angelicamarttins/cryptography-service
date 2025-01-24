@@ -2,6 +2,9 @@ package com.service.cryptography.model.dto;
 
 import com.service.cryptography.model.Transfer;
 import java.math.BigDecimal;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,10 +14,14 @@ public class TransferDto {
 
   private Long transferId;
 
+  @NotBlank
   private String userDocument;
 
+  @NotBlank
   private String creditCardToken;
 
+  @NotNull
+  @Size(max = 999_999_999)
   private BigDecimal value;
 
   public static TransferDto fromEntityToDto(Transfer transfer) {
