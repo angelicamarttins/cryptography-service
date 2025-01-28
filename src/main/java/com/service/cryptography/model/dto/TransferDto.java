@@ -18,6 +18,10 @@ public class TransferDto {
 
   @NotBlank(groups = TransferDtoValidators.CreateTransfer.class,
     message = "UserDocument is mandatory for creation and optional for updating")
+  @Size(groups = TransferDtoValidators.CreateTransfer.class,
+    min = 11,
+    max = 14,
+    message = "UserDocument must be 11 for CPF and 14 for CNPJ")
   private String userDocument;
 
   @NotBlank(groups = TransferDtoValidators.CreateTransfer.class,
