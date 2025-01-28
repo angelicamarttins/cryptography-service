@@ -11,6 +11,7 @@ import com.service.cryptography.security.AesEncryption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Objects;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -104,21 +105,38 @@ public class TransferService {
     }
   }
 
-  public void updateTransfer(Long transferId, String password) {
+  public TransferDto updateTransfer(TransferPayload transferPayload, Long transferId, String password) {
     try {
+      TransferDto transferDto = transferPayload.getTransferDto();
       Transfer transfer = transferRepository
         .findById(transferId)
         .orElseThrow(() -> new TransferNotFoundException(transferId));
 
-      String decryptedUserDocument = AesEncryption.decrypt(
-        transfer.getUserDocument(),
-        password
-      );
-      String decryptedCreditCardToken = AesEncryption.decrypt(
-        transfer.getCreditCardToken(),
-        password
-      );
+      if (Objects.nonNull(transferDto.getUserDocument())) {
+        String decryptedUserDocument = AesEncryption.encrypt(
+          transferDto.getUserDocument(),
+          password
+        );
 
+        transfer.setUserDocument(decryptedUserDocument);
+      }
+
+      if (Objects.nonNull(transferDto.getCreditCardToken())) {
+        String decryptedCreditCardToken = AesEncryption.encrypt(
+          transferDto.getCreditCardToken(),
+          password
+        );
+
+        transfer.setCreditCardToken(decryptedCreditCardToken);
+      }
+
+      if (Objects.nonNull(transferDto.getValue())) {
+        transfer.setValue(transferDto.getValue());
+      }
+
+      transferRepository.save(transfer);
+
+      return TransferDto.fromEntityToDto(transfer);
     } catch (NoSuchPaddingException
              | IllegalBlockSizeException
              | NoSuchAlgorithmException

@@ -33,7 +33,10 @@ public class TransferController {
   private final TransferService transferService;
 
   @GetMapping("/{transferId}")
-  public ResponseEntity<TransferDto> getCryptography(@PathVariable Long transferId, @RequestParam String password) {
+  public ResponseEntity<TransferDto> getCryptography(
+    @PathVariable Long transferId,
+    @RequestParam String password
+  ) {
     log.info("Starting get transfer");
 
     TransferDto transfer = transferService.findTransfer(transferId, password);
@@ -58,12 +61,17 @@ public class TransferController {
   }
 
   @PatchMapping("/{transferId}")
-  public ResponseEntity<String> updateCryptography(@PathVariable Long transferId, @RequestParam String password) {
+  public ResponseEntity<TransferDto> updateCryptography(
+    @Validated(TransferDtoValidators.UpdateTransfer.class)
+    @RequestBody TransferPayload transferPayload,
+    @PathVariable Long transferId,
+    @RequestParam String password
+  ) {
     log.info("Starting update transfer");
 
-    transferService.updateTransfer(transferId, password);
+    TransferDto transfer = transferService.updateTransfer(transferPayload, transferId, password);
 
-    return ResponseEntity.ok("Updated cryptography id = " + transferId);
+    return ResponseEntity.ok(transfer);
   }
 
   @DeleteMapping("{transferId}")
