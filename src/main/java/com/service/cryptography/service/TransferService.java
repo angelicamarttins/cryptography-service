@@ -157,4 +157,12 @@ public class TransferService {
     }
   }
 
+  public void deleteTransfer(Long transferId) {
+    Transfer transfer = transferRepository
+      .findById(transferId)
+      .orElseThrow(() -> new TransferNotFoundException(transferId));
+
+    transferRepository.delete(transfer);
+  }
+
 }

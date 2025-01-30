@@ -75,10 +75,12 @@ public class TransferController {
   }
 
   @DeleteMapping("{transferId}")
-  public ResponseEntity<String> deleteCryptography(@PathVariable Long transferId) {
+  public ResponseEntity<Void> deleteCryptography(@PathVariable Long transferId) {
     log.info("Starting delete transfer");
 
-    return ResponseEntity.ok("Deleted cryptography id = " + transferId);
+    transferService.deleteTransfer(transferId);
+
+    return ResponseEntity.noContent().build();
   }
 
 }
