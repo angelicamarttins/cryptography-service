@@ -5,9 +5,11 @@ import com.service.cryptography.model.enums.CryptographyMethod;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class TransferPayload {
 
   @NotNull(groups = TransferDtoValidators.CreateTransfer.class,
